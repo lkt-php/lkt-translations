@@ -1,0 +1,36 @@
+{
+  "name": "lkt-php/lkt-translations",
+  "description": "LKT PHP Translations",
+  "type": "library",
+  "version": "1.0.0",
+  "require": {
+    "php": ">=7.2.0",
+    "ext-intl": "*",
+    "lkt-php/lkt-instance-patterns": "^1.0.9",
+    "lkt-php/lkt-validations": "^1.0.0",
+    "lkt-php/lkt-drivers": "^1.0.0",
+    "chillerlan/php-filereader": "^2.0",
+    "symfony/console": "^5.0",
+    "nesbot/carbon": "^2.24"
+  },
+  "license": "MIT",
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://gitlab.com/lkt-php/lkt-instance-patterns.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://gitlab.com/lkt-php/lkt-validations.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://gitlab.com/lkt-php/lkt-drivers.git"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Lkt\\Translations\\": "src"
+    }
+  }
+}

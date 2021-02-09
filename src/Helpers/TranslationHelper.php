@@ -11,23 +11,7 @@ namespace Lkt\Translations\Helpers;
 class TranslationHelper
 {
     protected static $STACK = [];
-
-    /**
-     * @param array $data
-     * @param string $group
-     * @param string $lang
-     */
-    public static function addTranslations(array $data, string $group, string $lang): void
-    {
-        if (!is_array(self::$STACK[$lang])){
-            self::$STACK[$lang] = [];
-        }
-        if (!is_array(self::$STACK[$lang][$group])){
-            self::$STACK[$lang][$group] = [];
-        }
-
-        self::$STACK[$lang][$group] = array_merge(self::$STACK[$lang][$group], $data);
-    }
+    protected static $PATHS = [];
 
     /**
      * @param string $lang
@@ -35,9 +19,34 @@ class TranslationHelper
      */
     public static function getLangTranslations(string $lang): array
     {
-        if (!self::$STACK[$lang]){
-            return [];
+        if (!is_array(self::$STACK[$lang])){
+
+            $r = [];
+            foreach (self::$PATHS[$lang] as $path){
+                $files = scandir($path);
+                foreach ($files as $file){
+                    if ($file === '.' || $file === '..' || is_dir("{$path}/{$file}")){
+                        continue;
+                    }
+
+                    $data = require "{$path}/{$file}";
+                    $r = array_merge($r, $data);
+                }
+            }
+
+            self::$STACK[$lang] = $r;
         }
+
         return self::$STACK[$lang];
+    }
+
+    public static function addLocalePath(string $lang, string $path)
+    {
+        if (!is_array(self::$PATHS[$lang])){
+            self::$PATHS[$lang] = [];
+        }
+        if (!in_array($path, self::$PATHS, true)){
+            self::$PATHS[$lang][] = $path;
+        }
     }
 }

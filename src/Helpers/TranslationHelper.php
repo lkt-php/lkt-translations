@@ -46,7 +46,7 @@ class TranslationHelper
      */
     public static function addLocalePath(string $lang, string $path): void
     {
-        if (!is_array(self::$PATHS[$lang])) {
+        if (!isset(self::$PATHS[$lang]) || !is_array(self::$PATHS[$lang])) {
             self::$PATHS[$lang] = [];
         }
         if (!in_array($path, self::$PATHS, true)) {

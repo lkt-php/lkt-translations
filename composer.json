@@ -2,13 +2,14 @@
   "name": "lkt-php/lkt-translations",
   "description": "LKT PHP Translations",
   "type": "library",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "require": {
     "php": ">=7.2.0",
     "ext-intl": "*",
-    "lkt-php/lkt-instance-patterns": "^1.0.9",
+    "lkt-php/lkt-instance-patterns": "^1.1",
     "lkt-php/lkt-validations": "^1.0.0",
     "lkt-php/lkt-drivers": "^1.0.0",
+    "lkt-php/lkt-tools": "^1.1",
     "chillerlan/php-filereader": "^2.0",
     "symfony/console": "^5.0",
     "nesbot/carbon": "^2.24"
@@ -17,20 +18,27 @@
   "repositories": [
     {
       "type": "vcs",
-      "url": "https://gitlab.com/lkt-php/lkt-instance-patterns.git"
+      "url": "https://gitlab.com/lkt-php/lkt-instance-patterns"
     },
     {
       "type": "vcs",
-      "url": "https://gitlab.com/lkt-php/lkt-validations.git"
+      "url": "https://gitlab.com/lkt-php/lkt-validations"
     },
     {
       "type": "vcs",
-      "url": "https://gitlab.com/lkt-php/lkt-drivers.git"
+      "url": "https://gitlab.com/lkt-php/lkt-drivers"
+    },
+    {
+      "type": "vcs",
+      "url": "https://gitlab.com/lkt-php/lkt-tools"
     }
   ],
   "autoload": {
     "psr-4": {
       "Lkt\\Translations\\": "src"
-    }
+    },
+    "files": [
+      "src/bootstrap.php"
+    ]
   }
 }

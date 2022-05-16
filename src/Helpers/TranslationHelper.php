@@ -61,45 +61,4 @@ class TranslationHelper
     {
         return array_keys(self::$PATHS);
     }
-
-    /**
-     * @param array $array
-     * @param array $parentKeys
-     * @return array
-     */
-    public function arrayValuesRecursive($array = [], $parentKeys = [])
-    {
-        $r = [];
-
-        foreach ($array as $value) {
-            if (is_array($value)) {
-                $r = array_merge($r, self::arrayValuesRecursive($value));
-            } else {
-                $r[] = $value;
-            }
-        }
-        return $r;
-    }
-
-    /**
-     * @param array $array
-     * @param string $divider
-     * @param array $parentKeys
-     * @return array
-     */
-    public function arrayValuesRecursiveWithKeys($array = [], $divider = '.', $parentKeys = [])
-    {
-        $r = [];
-
-        foreach ($array as $key => $value) {
-            $t = array_merge($parentKeys, [$key]);
-            if (is_array($value)) {
-                $r = array_merge($r, self::arrayValuesRecursiveWithKeys($value, $divider, $t));
-            } else {
-                $k = implode($divider, $t);
-                $r[$k] = $value;
-            }
-        }
-        return $r;
-    }
 }

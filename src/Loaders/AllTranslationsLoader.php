@@ -7,7 +7,7 @@ namespace Lkt\Translations\Loaders;
 use Lkt\InstancePatterns\Traits\AutomaticInstanceTrait;
 use Lkt\InstancePatterns\Traits\InstantiableTrait;
 use Lkt\Translations\Helpers\TranslationHelper;
-use function Couchbase\defaultDecoder;
+use function Lkt\Tools\Arrays\arrayValuesRecursiveWithKeys;
 
 /**
  * Class AllTranslationsLoader
@@ -26,7 +26,7 @@ class AllTranslationsLoader
 
         foreach ($languages as $language) {
             $translations = TranslationHelper::getLangTranslations($language);
-            $r[$language] = TranslationHelper::arrayValuesRecursiveWithKeys($translations);
+            $r[$language] = arrayValuesRecursiveWithKeys($translations);
         }
 
         return $r;

@@ -16,7 +16,7 @@ class Translations
         static::$lang = $lang;
     }
 
-    public static function get(string $key, string $lang = null): mixed
+    public static function get(string $key, ?string $lang = null): mixed
     {
         $lang = static::determineLang($lang);
         $i18n = static::getLangTranslations($lang);
@@ -34,8 +34,58 @@ class Translations
         return $dig;
     }
 
+    public static function set($path, $value, ?string $lang = null): void
+    {
+        $lang = static::determineLang($lang);
+        static::getLangTranslations($lang);
+        $temp =& static::$stack[$lang];
+
+        $path = explode('.', $path);
+        foreach ($path as $key) {
+            $temp = &$temp[$key];
+        }
+        $temp = $value;
+    }
+
+    public static function unset($path, ?string $lang = null): void
+    {
+        $lang = static::determineLang($lang);
+        static::getLangTranslations($lang);
+        $temp =& static::$stack[$lang];
+
+        $path = explode('.', $path);
+
+        foreach ($path as $key) {
+            if (!is_array($temp[$key])) {
+                unset($temp[$key]);
+            } else {
+                $temp =& $temp[$key];
+            }
+        }
+    }
+
+    public static function replaceTextRecursively(string|array $search, string|array $replacement, ?string $lang = null): void
+    {
+        $lang = static::determineLang($lang);
+        static::getLangTranslations($lang);
+        static::replaceText(static::$stack[$lang], $search, $replacement);
+    }
+
+    private static function replaceText(array &$stack, string|array $search, string|array $replacement): array
+    {
+        foreach ($stack as $key => &$value) {
+            if (is_array($value)) {
+                $stack[$key] = static::replaceText($value, $search, $replacement);
+            } else {
+                $stack[$key] = str_replace($search, $replacement, $value);
+            }
+        }
+        return $stack;
+    }
+
     public static function getLangTranslations(string $lang): array
     {
+        if (!$lang) $lang = static::getLang();
         if (!isset(static::$stack[$lang]) || !is_array(static::$stack[$lang])) {
 
             $r = [];
@@ -154,13 +204,9 @@ class Translations
 
     private static function determineLang(string $lang = null): ?string
     {
-        if ($lang !== null) {
-            return $lang;
-        }
+        if ($lang !== null) return $lang;
 
-        if (static::$lang !== null) {
-            return static::$lang;
-        }
+        if (static::$lang !== null) return static::$lang;
 
         $languages = static::getAvailableLanguages();
         if (count($languages) > 0) {

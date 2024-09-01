@@ -107,6 +107,13 @@ class Translations
         return static::$stack[$lang];
     }
 
+    public static function setLangTranslations(string $lang, array $data): array
+    {
+        if (!$lang) $lang = static::getLang();
+        static::$stack[$lang] = $data;
+        return static::$stack[$lang];
+    }
+
     public static function addLocalePath(string $lang, string $path): void
     {
         if (!isset(self::$paths[$lang]) || !is_array(self::$paths[$lang])) {

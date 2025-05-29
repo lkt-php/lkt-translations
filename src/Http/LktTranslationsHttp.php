@@ -68,7 +68,7 @@ class LktTranslationsHttp
 
         return Response::ok([
             'item' => $instance->read(),
-            'perms' => ['update', 'drop']
+            'perms' => ['update', 'drop', 'switch-edit-mode']
         ]);
     }
 

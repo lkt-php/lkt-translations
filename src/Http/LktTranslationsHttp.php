@@ -5,6 +5,7 @@ namespace Lkt\Translations\Http;
 use Lkt\Factory\Schemas\Exceptions\DuplicatedValueException;
 use Lkt\Http\Response;
 use Lkt\Translations\Instances\LktTranslation;
+use Lkt\Translations\Translations;
 use function Lkt\Tools\Parse\clearInput;
 
 class LktTranslationsHttp
@@ -39,6 +40,43 @@ class LktTranslationsHttp
             'results' => $response,
             'perms' => ['create']
         ]);
+    }
+
+    public static function i18n(array $params): Response
+    {
+        $results = LktTranslation::getMany();
+        $r = [];
+
+        foreach ($results as $result) {
+            $property = $result->getProperty();
+            if (str_contains($property, '.')) {
+                $properties = explode('.', $property);
+
+                $l = count($properties) - 1;
+                $i = 0;
+                $temp = &$r;
+                while ($i <= $l) {
+                    if ($i === $l) {
+                        $temp[$properties[$i]] = $result->getValue();
+                        break;
+                    } else {
+                        $temp[$properties[$i]] = [];
+                        $temp = &$temp[$properties[$i]];
+                        ++$i;
+                    }
+                }
+
+            } else {
+                $r[$property] = $result->getValue();
+            }
+        }
+
+
+        $codedTranslations = Translations::getLangTranslations();
+
+        $r = [...$codedTranslations, ...$r];
+
+        return Response::ok($r);
     }
 
 

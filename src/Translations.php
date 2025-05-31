@@ -2,6 +2,7 @@
 
 namespace Lkt\Translations;
 
+use Lkt\Locale\Locale;
 use function Lkt\Tools\Arrays\arrayValuesRecursiveWithKeys;
 use function Lkt\Tools\Arrays\getArrayFirstPosition;
 
@@ -83,9 +84,9 @@ class Translations
         return $stack;
     }
 
-    public static function getLangTranslations(string $lang): array
+    public static function getLangTranslations(string $lang = ''): array
     {
-        if (!$lang) $lang = static::getLang();
+        if (!$lang) $lang = Locale::getLangCode();
         if (!isset(static::$stack[$lang]) || !is_array(static::$stack[$lang])) {
 
             $r = [];
@@ -109,7 +110,7 @@ class Translations
 
     public static function setLangTranslations(string $lang, array $data): array
     {
-        if (!$lang) $lang = static::getLang();
+        if (!$lang) $lang = Locale::getLangCode();
         static::$stack[$lang] = $data;
         return static::$stack[$lang];
     }

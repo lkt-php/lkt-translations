@@ -60,7 +60,9 @@ class LktTranslationsHttp
                         $temp[$properties[$i]] = $result->getValue();
                         break;
                     } else {
-                        $temp[$properties[$i]] = [];
+                        if (!isset($temp[$properties[$i]])) {
+                            $temp[$properties[$i]] = [];
+                        }
                         $temp = &$temp[$properties[$i]];
                         ++$i;
                     }

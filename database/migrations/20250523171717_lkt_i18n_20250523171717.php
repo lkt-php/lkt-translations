@@ -32,6 +32,10 @@ class LktI18n20250523171717 extends AbstractMigration
      */
     public function change()
     {
+        $exists = $this->hasTable('lkt_i18n');
+        if ($exists) {
+            return;
+        }
         $table = $this->table('lkt_i18n', ['collation' => 'utf8_general_ci'])
             ->addColumn('created_at', 'datetime', ['null' => true, 'default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('updated_at', 'datetime', ['null' => true, 'default' => null, 'update' => 'CURRENT_TIMESTAMP'])

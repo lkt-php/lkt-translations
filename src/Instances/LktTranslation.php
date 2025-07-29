@@ -9,7 +9,7 @@ class LktTranslation extends GeneratedLktTranslation
 {
     const COMPONENT = 'lkt-i18n';
 
-    public function read()
+    public function read(): array
     {
         $fields = Schema::get(static::COMPONENT)->getAllFields();
         return $this->readFields($fields);

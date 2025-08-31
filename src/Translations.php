@@ -5,6 +5,7 @@ namespace Lkt\Translations;
 use Lkt\Locale\Locale;
 use function Lkt\Tools\Arrays\arrayValuesRecursiveWithKeys;
 use function Lkt\Tools\Arrays\getArrayFirstPosition;
+use function Lkt\Tools\Export\varToPHPCode;
 
 class Translations
 {
@@ -106,6 +107,27 @@ class Translations
         }
 
         return static::$stack[$lang];
+    }
+
+    public static function getLangTranslationsAsArray(string $lang = ''): array
+    {
+        $stack = static::getLangTranslations($lang);
+        $r = [];
+        foreach ($stack as $key => &$value) {
+            $temp =& $r;
+
+            $path = explode('.', $key);
+            foreach ($path as $key) {
+                $temp = &$temp[$key];
+            }
+            $temp = $value;
+        }
+        return $r;
+    }
+
+    public static function getLangTranslationsAsArrayAsString(string $lang = ''): string
+    {
+        return varToPHPCode(static::getLangTranslationsAsArray($lang));
     }
 
     public static function setLangTranslations(string $lang, array $data): array

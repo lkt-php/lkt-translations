@@ -4,7 +4,9 @@ namespace Lkt\WebPages\Config\Schemas;
 
 use Lkt\Factory\Schemas\Fields\AssocJSONField;
 use Lkt\Factory\Schemas\Fields\DateTimeField;
+use Lkt\Factory\Schemas\Fields\ForeignKeyField;
 use Lkt\Factory\Schemas\Fields\IdField;
+use Lkt\Factory\Schemas\Fields\RelatedField;
 use Lkt\Factory\Schemas\Fields\StringChoiceField;
 use Lkt\Factory\Schemas\Fields\StringField;
 use Lkt\Factory\Schemas\InstanceSettings;
@@ -22,6 +24,7 @@ return Schema::table('lkt_i18n', LktTranslation::COMPONENT)
     ->setCountableField('id')
     ->setExcludedFieldsForViewFeed('create', ['value'])
     ->setExcludedFieldsForViewFeed('update', ['value'])
+    ->setFieldsForRelatedMode('id', 'property', ['id', 'property', 'type', 'value', 'valueData'])
     ->addField(IdField::define('id'))
     ->addField(
         DateTimeField::define('createdAt', 'created_at')
@@ -39,4 +42,7 @@ return Schema::table('lkt_i18n', LktTranslation::COMPONENT)
     ->addField(StringField::define('value')->setIsI18nJson())
 
     ->addField(AssocJSONField::define('valueData', 'value')->setIsI18nJson())
+
+    ->addField(ForeignKeyField::defineRelation(LktTranslation::COMPONENT, 'parent', 'parent_id'))
+    ->addField(RelatedField::defineRelation(LktTranslation::COMPONENT, 'children', 'parent_id'))
     ;

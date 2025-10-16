@@ -12,12 +12,23 @@ class LktTranslationsHttp
 {
     public static function index(array $params): Response
     {
-        $queryBuilder = LktTranslation::getQueryCaller();
+        $queryBuilder = LktTranslation::getQueryCaller()
+            ->andParentEqual(0);
 
         if (isset($params['type'])) {
             $type = (int)clearInput($params['type']);
             $queryBuilder->andTypeEqual($type);
         }
+
+        if (isset($params['property'])) {
+            $property = clearInput($params['property']);
+            if ($property !== '') $queryBuilder->andPropertyLike($property);
+        }
+
+//        if (isset($params['value'])) {
+//            $value = clearInput($params['value']);
+//            if ($value !== '') $queryBuilder->andValueLike($value);
+//        }
 
         if (isset($params['page'])) {
             $page = (int)clearInput($params['page']);

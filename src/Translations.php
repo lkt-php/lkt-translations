@@ -14,9 +14,22 @@ class Translations
     protected static array $paths = [];
     protected static ?string $lang = null;
 
+    protected static array $fallbackLanguages = [];
+    protected static array $customFallbackLanguages = [];
+
     public static function setLang(string $lang): void
     {
         static::$lang = $lang;
+    }
+
+    public static function setFallbackLanguages(array $fallbackLanguages): void
+    {
+        static::$fallbackLanguages = array_unique($fallbackLanguages);
+    }
+
+    public static function setCustomFallbackLanguages(string $lang, array $fallbackLanguages): void
+    {
+        static::$customFallbackLanguages[$lang] = array_unique($fallbackLanguages);
     }
 
     public static function get(string $key, ?string $lang = null): mixed
@@ -31,6 +44,38 @@ class Translations
                 $dig = $dig[$step];
             } else {
                 break;
+            }
+        }
+
+        if (is_null($dig)) {
+            $fallbackResponse = null;
+
+            if (is_array(static::$customFallbackLanguages[$lang]) && count(static::$customFallbackLanguages[$lang]) > 0) {
+                foreach (static::$customFallbackLanguages[$lang] as $fallback) {
+                    $aux = static::get($key, $fallback);
+                    if (!is_null($aux) ) {
+                        $fallbackResponse = $aux;
+                        break;
+                    }
+                }
+            }
+
+            if (!is_null($fallbackResponse)) {
+                return $fallbackResponse;
+            }
+
+            if (count(static::$fallbackLanguages) > 0) {
+                foreach (static::$fallbackLanguages as $fallback) {
+                    $aux = static::get($key, $fallback);
+                    if (!is_null($aux) ) {
+                        $fallbackResponse = $aux;
+                        break;
+                    }
+                }
+            }
+
+            if (!is_null($fallbackResponse)) {
+                return $fallbackResponse;
             }
         }
 

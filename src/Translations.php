@@ -3,6 +3,7 @@
 namespace Lkt\Translations;
 
 use Lkt\Locale\Locale;
+use Lkt\Translations\DTO\FeedWithReferenceDataResponse;
 use function Lkt\Tools\Arrays\arrayValuesRecursiveWithKeys;
 use function Lkt\Tools\Arrays\getArrayFirstPosition;
 use function Lkt\Tools\Export\varToPHPCode;
@@ -166,9 +167,18 @@ class Translations
         return $r;
     }
 
-    public static function getMissedTranslations(): array
+    public static function getMissedTranslations(array $langFilter = []): array
     {
         $languages = static::getAvailableLanguages();
+
+        if (count($langFilter) > 1) {
+            $languagesReplacement = [];
+            foreach ($languages as $language) if (in_array($language, $langFilter, true)) $languagesReplacement[] = $language;
+
+            if (count($languagesReplacement) > 1) {
+                $languages = $languagesReplacement;
+            }
+        }
 
         $r = [];
 
@@ -243,5 +253,64 @@ class Translations
             static::$lang = getArrayFirstPosition($languages);
         }
         return static::$lang;
+    }
+
+    public static function feedWithReferenceData(array $content, string $referenceLangKey, string $fedLangKey, string $referencedLangContentKey, string $fedLangContentKey): FeedWithReferenceDataResponse
+    {
+        $translations = Translations::export();
+        $updatedTranslations = [];
+        $skippedTranslations = [];
+
+        foreach ($content as $row) {
+            $referenceDatum = $row[$referencedLangContentKey];
+            $fedDatum = $row[$fedLangContentKey];
+
+            $originalTranslationKey = array_search($referenceDatum, $translations[$referenceLangKey]);
+
+
+            if (!array_key_exists($originalTranslationKey, $translations[$referenceLangKey])) {
+                $skippedTranslations[$referenceDatum] = $fedDatum;
+            }
+            $originalFedTranslationDatum = $translations[$fedLangKey][$originalTranslationKey];
+
+            if ($fedDatum != $originalFedTranslationDatum) {
+                $updatedTranslations[$originalTranslationKey] = $fedDatum;
+            }
+        }
+
+        foreach ($updatedTranslations as $translationKey => $translationDatum) {
+            Translations::set($translationKey, $translationDatum, $fedLangKey);
+        }
+
+        return new FeedWithReferenceDataResponse($updatedTranslations, $skippedTranslations);
+    }
+
+    public static function feedOnlyMissedWithReferenceData(array $content, string $referenceLangKey, string $fedLangKey, string $referencedLangContentKey, string $fedLangContentKey): FeedWithReferenceDataResponse
+    {
+        $translations = Translations::getMissedTranslations([$referenceLangKey, $fedLangKey]);
+        $updatedTranslations = [];
+        $skippedTranslations = [];
+
+        foreach ($content as $row) {
+            $referenceDatum = $row[$referencedLangContentKey];
+            $fedDatum = $row[$fedLangContentKey];
+
+            $originalTranslationKey = array_search($referenceDatum, $translations[$referenceLangKey]);
+
+            if (!array_key_exists($originalTranslationKey, $translations[$referenceLangKey])) {
+                $skippedTranslations[$referenceDatum] = $fedDatum;
+            }
+            $originalFedTranslationDatum = $translations[$fedLangKey][$originalTranslationKey];
+
+            if ($fedDatum != $originalFedTranslationDatum) {
+                $updatedTranslations[$originalTranslationKey] = $fedDatum;
+            }
+        }
+
+        foreach ($updatedTranslations as $translationKey => $translationDatum) {
+            Translations::set($translationKey, $translationDatum, $fedLangKey);
+        }
+
+        return new FeedWithReferenceDataResponse($updatedTranslations, $skippedTranslations);
     }
 }

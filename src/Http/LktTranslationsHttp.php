@@ -16,7 +16,7 @@ class LktTranslationsHttp
             ->andParentEqual(0);
 
         if (isset($params['type'])) {
-            $type = (int)clearInput($params['type']);
+            $type = clearInput($params['type']);
             $queryBuilder->andTypeEqual($type);
         }
 

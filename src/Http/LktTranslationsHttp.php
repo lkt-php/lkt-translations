@@ -55,11 +55,13 @@ class LktTranslationsHttp
 
     public static function i18n(array $params): Response
     {
-        $results = LktTranslation::getMany();
+        $results = LktTranslation::getMany(LktTranslation::getQueryCaller()->andParentEqual(0));
         $r = [];
 
-        foreach ($results as $result) {
-            $property = $result->getProperty();
+        function processResult(LktTranslation $result, &$r)
+        {
+            $property = trim($result->getProperty());
+            $isMany = $result->typeIsMany();
             if (str_contains($property, '.')) {
                 $properties = explode('.', $property);
 
@@ -68,7 +70,14 @@ class LktTranslationsHttp
                 $temp = &$r;
                 while ($i <= $l) {
                     if ($i === $l) {
-                        $temp[$properties[$i]] = $result->getValue();
+
+                        if ($isMany) {
+                            $items = $result->getChildren();
+                            $temp[$properties[$i]] = [];
+                            foreach ($items as $item) processResult($item, $temp[$properties[$i]]);
+                        } else {
+                            $temp[$properties[$i]] = $result->getValue();
+                        }
                         break;
                     } else {
                         if (!isset($temp[$properties[$i]])) {
@@ -80,8 +89,17 @@ class LktTranslationsHttp
                 }
 
             } else {
-                $r[$property] = $result->getValue();
+                if ($isMany) {
+                    $items = $result->getChildren();
+                    foreach ($items as $item) processResult($item, $r);
+                } else {
+                    $r[$property] = $result->getValue();
+                }
             }
+        }
+
+        foreach ($results as $result) {
+            processResult($result, $r);
         }
 
 
@@ -89,7 +107,7 @@ class LktTranslationsHttp
 
         $r = [...$codedTranslations, ...$r];
 
-        return Response::ok($r);
+        return Response::ok($r)->setJSONEncodingFlag(JSON_FORCE_OBJECT);
     }
 
 

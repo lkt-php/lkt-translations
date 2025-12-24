@@ -37,7 +37,7 @@ return Schema::table('lkt_i18n', LktTranslation::COMPONENT)
             ->setCurrentTimeStampAsDefaultValue()
     )
     ->addField(StringChoiceField::choice(TranslationType::Types, 'type'))
-    ->addField(StringField::define('property')->setIsUnique(true))
+    ->addField(StringField::define('property'))
 
     ->addField(StringField::define('value')->setIsI18nJson())
 

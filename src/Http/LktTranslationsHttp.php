@@ -70,7 +70,6 @@ class LktTranslationsHttp
                 $temp = &$r;
                 while ($i <= $l) {
                     if ($i === $l) {
-
                         if ($isMany) {
                             $items = $result->getChildren();
                             $temp[$properties[$i]] = [];
@@ -91,7 +90,8 @@ class LktTranslationsHttp
             } else {
                 if ($isMany) {
                     $items = $result->getChildren();
-                    foreach ($items as $item) processResult($item, $r);
+                    $r[$property] = [];
+                    foreach ($items as $item) processResult($item, $r[$property]);
                 } else {
                     $r[$property] = $result->getValue();
                 }

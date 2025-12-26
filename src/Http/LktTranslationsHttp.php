@@ -18,6 +18,8 @@ class LktTranslationsHttp
         if (isset($params['type'])) {
             $type = clearInput($params['type']);
             $queryBuilder->andTypeEqual($type);
+        } else {
+            $queryBuilder->andTypeNot('many');
         }
 
         if (isset($params['property'])) {
@@ -118,14 +120,13 @@ class LktTranslationsHttp
             $instance->doCreate($params);
 
         } catch (DuplicatedValueException $e) {
-
             return Response::badRequest([
                 'error' => $e->getMessage()
             ]);
         }
 
         return Response::ok([
-            'item' => $instance->read(),
+            'item' => $instance->autoRead(),
             'id' => $instance->getId(),
         ]);
     }
@@ -136,7 +137,7 @@ class LktTranslationsHttp
         if ($instance->isAnonymous()) return Response::notFound();
 
         return Response::ok([
-            'item' => $instance->read(),
+            'item' => $instance->autoRead(),
             'perms' => ['update', 'drop', 'switch-edit-mode']
         ]);
     }

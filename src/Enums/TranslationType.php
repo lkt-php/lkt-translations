@@ -2,19 +2,38 @@
 
 namespace Lkt\Translations\Enums;
 
-class TranslationType
+enum TranslationType: string
 {
-    const Text = 'text';
-    const Textarea = 'textarea';
-    const Html = 'html';
-    const Many = 'many';
-//    const Select = 'select';
+    case Text = 'text';
+    case Textarea = 'textarea';
+    case Html = 'html';
+    case Many = 'many';
 
-    const Types = [
-        self::Text,
-        self::Textarea,
-        self::Html,
-        self::Many,
-//        self::Select,
-    ];
+    public static function getChoiceOptions(): array
+    {
+        return [
+            'text' => TranslationType::Text->value,
+            'textarea' => TranslationType::Textarea->value,
+            'html' => TranslationType::Html->value,
+            'many' => TranslationType::Many->value,
+        ];
+    }
 }
+
+//
+//class TranslationType
+//{
+//    const Text = 'text';
+//    const Textarea = 'textarea';
+//    const Html = 'html';
+//    const Many = 'many';
+////    const Select = 'select';
+//
+//    const Types = [
+//        self::Text,
+//        self::Textarea,
+//        self::Html,
+//        self::Many,
+////        self::Select,
+//    ];
+//}

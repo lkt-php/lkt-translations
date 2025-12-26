@@ -3,7 +3,6 @@
 namespace Lkt\Translations\Instances;
 
 use Lkt\Factory\Schemas\Schema;
-use Lkt\Translations\Enums\TranslationType;
 use Lkt\Translations\Generated\GeneratedLktTranslation;
 
 class LktTranslation extends GeneratedLktTranslation

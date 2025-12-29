@@ -2,12 +2,12 @@
   "name": "lkt/translations",
   "description": "LKT PHP Translations",
   "type": "library",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "require": {
     "php": ">=8.1.0",
     "ext-intl": "*",
     "lkt/tools": "^2.0",
-    "lkt/phinx-configurator": "^2.0",
+    "lkt/phinx-configurator": "^3.0",
     "lkt/http-response": "^2.0",
     "lkt/commander": "^2.0",
     "lkt/code-maker": "^3.0"

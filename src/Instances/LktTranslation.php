@@ -3,6 +3,7 @@
 namespace Lkt\Translations\Instances;
 
 use Lkt\Factory\Schemas\Schema;
+use Lkt\Translations\Enums\TranslationType;
 use Lkt\Translations\Generated\GeneratedLktTranslation;
 
 class LktTranslation extends GeneratedLktTranslation
@@ -27,13 +28,13 @@ class LktTranslation extends GeneratedLktTranslation
         return $this->save();
     }
 
-    public static function createOrUpdate(string $property, string $type, array $value = [], int $parentId = 0): static
+    public static function createOrUpdate(string $property, TranslationType $type, array $value = [], int $parentId = 0): static
     {
         $query = static::getQueryCaller()->andPropertyEqual($property);
         if ($parentId > 0) $query->andParentEqual($parentId);
         $instance = static::getOne($query);
         $payload = [
-            'type' => $type,
+            'type' => $type->value,
             'property' => $property,
             'valueData' => $value,
             'parentId' => $parentId,
@@ -46,14 +47,14 @@ class LktTranslation extends GeneratedLktTranslation
         return $instance;
     }
 
-    public static function createIfMissing(string $property, string $type, array $value = [], int $parentId = 0): static
+    public static function createIfMissing(string $property, TranslationType $type, array $value = [], int $parentId = 0): static
     {
         $query = static::getQueryCaller()->andPropertyEqual($property);
         if ($parentId > 0) $query->andParentEqual($parentId);
         $instance = static::getOne($query);
         if (!$instance) {
             $instance = LktTranslation::getInstance()->autoCreate([
-                'type' => $type,
+                'type' => $type->value,
                 'property' => $property,
                 'valueData' => $value,
                 'parentId' => $parentId,

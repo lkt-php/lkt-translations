@@ -18,13 +18,13 @@ class LktTranslation extends GeneratedLktTranslation
 
     public function doCreate(array $data): static
     {
-        static::feedInstance($this, $data, 'create');
+        static::feedInstance($this, $data);
         return $this->save();
     }
 
     public function doUpdate(array $data): static
     {
-        static::feedInstance($this, $data, 'update');
+        static::feedInstance($this, $data);
         return $this->save();
     }
 

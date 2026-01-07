@@ -2,7 +2,7 @@
   "name": "lkt/translations",
   "description": "LKT PHP Translations",
   "type": "library",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "require": {
     "php": ">=8.1.0",
     "ext-intl": "*",

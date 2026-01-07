@@ -47,7 +47,7 @@ class LktTranslationsHttp
 
 
         $response = [];
-        foreach ($results as $result) $response[] = $result->read();
+        foreach ($results as $result) $response[] = $result->autoRead();
 
         return Response::ok([
             'results' => $response,
@@ -117,7 +117,7 @@ class LktTranslationsHttp
     {
         $instance = LktTranslation::getInstance();
         try {
-            $instance->doCreate($params);
+            $instance->setAccessPolicy('write')->autoCreate($params);
 
         } catch (DuplicatedValueException $e) {
             return Response::badRequest([
@@ -146,7 +146,7 @@ class LktTranslationsHttp
     {
         $instance = LktTranslation::getInstance((int)$params['id']);
         if ($instance->isAnonymous()) return Response::notFound();
-        $instance->doUpdate($params);
+        $instance->setAccessPolicy('write')->autoUpdate($params);
 
         return Response::ok([
             'id' => $instance->getId(),

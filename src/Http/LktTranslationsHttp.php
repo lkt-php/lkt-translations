@@ -2,6 +2,7 @@
 
 namespace Lkt\Translations\Http;
 
+use Lkt\Factory\Schemas\Enums\AccessPolicyEndOfLife;
 use Lkt\Factory\Schemas\Exceptions\DuplicatedValueException;
 use Lkt\Http\Response;
 use Lkt\Translations\Instances\LktTranslation;
@@ -51,6 +52,7 @@ class LktTranslationsHttp
 
         return Response::ok([
             'results' => $response,
+            'maxPage' => LktTranslation::getAmountOfPages($queryBuilder),
             'perms' => ['create']
         ]);
     }
@@ -117,7 +119,7 @@ class LktTranslationsHttp
     {
         $instance = LktTranslation::getInstance();
         try {
-            $instance->setAccessPolicy('write')->autoCreate($params);
+            $instance->setAccessPolicy('write', AccessPolicyEndOfLife::UntilNextWrite)->autoCreate($params);
 
         } catch (DuplicatedValueException $e) {
             return Response::badRequest([
@@ -146,7 +148,7 @@ class LktTranslationsHttp
     {
         $instance = LktTranslation::getInstance((int)$params['id']);
         if ($instance->isAnonymous()) return Response::notFound();
-        $instance->setAccessPolicy('write')->autoUpdate($params);
+        $instance->setAccessPolicy('write', AccessPolicyEndOfLife::UntilNextWrite)->autoUpdate($params);
 
         return Response::ok([
             'id' => $instance->getId(),

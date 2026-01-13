@@ -80,6 +80,38 @@ class SetupTranslationsCommand extends Command
             'es' => 'Traducciones',
             'en' => 'Translations',
         ], $parentId);
+        LktTranslation::createIfMissing('addI18n', TranslationType::Text, [
+            'es' => 'Agregar traducción',
+            'en' => 'Add translation',
+        ], $parentId);
+        LktTranslation::createIfMissing('addI18nAndNew', TranslationType::Text, [
+            'es' => 'Agregar traducción y seguir',
+            'en' => 'Add translation and new',
+        ], $parentId);
+        LktTranslation::createIfMissing('addDictionary', TranslationType::Text, [
+            'es' => 'Agregar diccionario',
+            'en' => 'Add dictionary',
+        ], $parentId);
+        LktTranslation::createIfMissing('addDictionaryAndNew', TranslationType::Text, [
+            'es' => 'Agregar diccionario y seguir',
+            'en' => 'Add dictionary and new',
+        ], $parentId);
+        LktTranslation::createIfMissing('i18nTitleSingle', TranslationType::Text, [
+            'es' => 'Traducción',
+            'en' => 'Translation',
+        ], $parentId);
+        LktTranslation::createIfMissing('i18nTitleMany', TranslationType::Text, [
+            'es' => 'Traducciones',
+            'en' => 'Translations',
+        ], $parentId);
+        LktTranslation::createIfMissing('dictionaryTitleSingle', TranslationType::Text, [
+            'es' => 'Diccionario',
+            'en' => 'Dictionary',
+        ], $parentId);
+        LktTranslation::createIfMissing('dictionaryTitleMany', TranslationType::Text, [
+            'es' => 'Diccionarios',
+            'en' => 'Dictionaries',
+        ], $parentId);
 
         return 1;
     }

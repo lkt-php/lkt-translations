@@ -59,59 +59,7 @@ class LktTranslationsHttp
 
     public static function i18n(array $params): Response
     {
-        $results = LktTranslation::getMany(LktTranslation::getQueryCaller()->andParentEqual(0));
-        $r = [];
-
-        function processResult(LktTranslation $result, &$r)
-        {
-            $property = trim($result->getProperty());
-            $isMany = $result->typeIsMany();
-            if (str_contains($property, '.')) {
-                $properties = explode('.', $property);
-
-                $l = count($properties) - 1;
-                $i = 0;
-                $temp = &$r;
-                while ($i <= $l) {
-                    if ($i === $l) {
-                        if ($isMany) {
-                            $items = $result->getChildren();
-                            $temp[$properties[$i]] = [];
-                            foreach ($items as $item) processResult($item, $temp[$properties[$i]]);
-                        } else {
-                            $temp[$properties[$i]] = $result->getValue();
-                        }
-                        break;
-                    } else {
-                        if (!isset($temp[$properties[$i]])) {
-                            $temp[$properties[$i]] = [];
-                        }
-                        $temp = &$temp[$properties[$i]];
-                        ++$i;
-                    }
-                }
-
-            } else {
-                if ($isMany) {
-                    $items = $result->getChildren();
-                    $r[$property] = [];
-                    foreach ($items as $item) processResult($item, $r[$property]);
-                } else {
-                    $r[$property] = $result->getValue();
-                }
-            }
-        }
-
-        foreach ($results as $result) {
-            processResult($result, $r);
-        }
-
-
-        $codedTranslations = Translations::getLangTranslations();
-
-        $r = [...$codedTranslations, ...$r];
-
-        return Response::ok($r)->setJSONEncodingFlag(JSON_FORCE_OBJECT);
+        return Response::ok(Translations::getCombinedLangStack())->setJSONEncodingFlag(JSON_FORCE_OBJECT);
     }
 
 
